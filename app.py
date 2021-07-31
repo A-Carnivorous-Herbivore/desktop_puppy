@@ -17,8 +17,7 @@ class testWindow(QWidget):
         super(testWindow, self).__init__(parent)
         self.setWindowFlag(int(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint))
         self.setAutoFillBackground(False)
-        self.playGIF('Resources/test.gif', False)
-
+        self.playGIF('Resources/test.gif', True)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         # self.is_running_action = False
         # self.action_images = []
@@ -56,6 +55,7 @@ class testWindow(QWidget):
             self.mouse_drag_pos = event.globalPos() - self.pos()
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
+            self.movie.start()
     '''鼠标移动, 则宠物也移动'''
 
     def mouseMoveEvent(self, event):
@@ -67,6 +67,7 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
+        self.movie.stop()
 
     def moveEvent(self, event):
         pass
@@ -113,14 +114,14 @@ class testWindow(QWidget):
 
         self.resize(self.curWidth, self.curHeight)
         self.label.movie().start()
-        self.lockToCorner()
+        if lock:
+            self.lockToCorner()
 
 
 if __name__ == '__main__':
 
     # print(Qt.FramelessWindowHint)
     app = QApplication(sys.argv)
-
     tW = testWindow()
     # tW.changeImage('shime1.png', True)
     tW.show()
