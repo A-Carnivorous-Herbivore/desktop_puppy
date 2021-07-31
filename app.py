@@ -18,7 +18,9 @@ class testWindow(QWidget):
         self.setWindowFlag(int(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint))
         self.setAutoFillBackground(False)
         self.playGIF('Resources/test.gif', True)
+        self.showTrayMenu()
         self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.is_running_action = False
         # self.is_running_action = False
         # self.action_images = []
         # self.action_pointer = 1
@@ -49,25 +51,35 @@ class testWindow(QWidget):
         if lock:
             self.lockToCorner()
 
+    '''重载鼠标单击事件'''
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.is_follow_mouse = True
             self.mouse_drag_pos = event.globalPos() - self.pos()
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
-            self.movie.start()
-    '''鼠标移动, 则宠物也移动'''
+        #    self.movie.start()
 
+    '''重载鼠标双击事件'''
+    def mouseDoubleClickEvent(self, event):
+        if not self.is_running_action:
+            self.is_running_action = True
+            self.movie.start()
+        else:
+            self.is_running_action = False
+            self.movie.stop()
+
+    '''重载鼠标移动事件'''
     def mouseMoveEvent(self, event):
         if Qt.LeftButton and self.is_follow_mouse:
             self.move(event.globalPos() - self.mouse_drag_pos)
             event.accept()
-    '''鼠标释放时, 取消绑定'''
 
+    '''重载鼠标释放事件'''
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
-        self.movie.stop()
+    #    self.movie.stop()
 
     def moveEvent(self, event):
         pass
@@ -79,6 +91,12 @@ class testWindow(QWidget):
         #     self.changeImage('shime4.png', False)
         #     print("case 2")
         # event.accept()
+
+    # 右键打开context menu
+    def contextMenuEvent(self, event):
+        menu = self.menu
+        action = menu.exec_(self.mapToGlobal(event.pos()))
+        #pass
 
     def randomAct(self):
         if not self.is_running_action:
@@ -117,6 +135,43 @@ class testWindow(QWidget):
         if lock:
             self.lockToCorner()
 
+    def showTrayMenu(self):
+        self.menu = QMenu()
+        self.stopAction = QAction("Stop", self, triggered=self.stop)
+        self.restAction = QAction("Rest", self, triggered=self.rest)
+        self.hideAction = QAction("Hide", self, triggered=self.hide)
+        self.showAction = QAction("Show", self, triggered=self.show)
+        self.quitAction = QAction("Quit", self, triggered=self.quit)
+        self.menu.addAction(self.restAction)
+        self.menu.addAction(self.quitAction)
+        self.menu.addAction(self.stopAction)
+        self.menu.addAction(self.hideAction)
+        self.menu.addAction(self.showAction)
+        self.tray = QSystemTrayIcon(self)
+        self.tray.setIcon(QIcon('Resources/trayIcon_duck.png'))
+        self.tray.setContextMenu(self.menu)
+        self.tray.show()
+
+    def stop(self):
+        if not self.is_running_action:
+            self.movie.stop()
+
+    def rest(self):
+        self.movie.stop()
+        self.lockToCorner()
+        # 替换狗子图片为蹲坐（暂无图源）
+
+    def hide(self):
+        if not self.is_running_action:
+            self.movie.stop()
+        self.setVisible(False)
+
+    def show(self):
+        self.setVisible(True)
+
+    def quit(self):
+        qApp.quit()
+        sys.exit()
 
 if __name__ == '__main__':
 
