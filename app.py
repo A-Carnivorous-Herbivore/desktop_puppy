@@ -1,16 +1,5 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 
-"""
-ZetCode PyQt5 tutorial
-
-In this example, we create a simple
-window in PyQt5.
-
-author: Jan Bodnar
-website: zetcode.com
-Last edited: August 2017
-"""
 
 import sys
 import os
@@ -28,7 +17,7 @@ class testWindow(QWidget):
         super(testWindow, self).__init__(parent)
         self.setWindowFlag(int(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint))
         self.setAutoFillBackground(False)
-        self.playGIF('test.gif', False)
+        self.playGIF('Resources/test.gif', False)
 
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         # self.is_running_action = False
