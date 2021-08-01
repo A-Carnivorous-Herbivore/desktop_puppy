@@ -11,13 +11,32 @@ from PyQt5 import *
 from random import *
 from PIL import Image
 
+class gifLabel(QLabel):
+    def __init__(self, *args, **kwargs):
+        QLabel.__init__(self, *args, **kwargs)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.is_follow_mouse = True
+            self.mouse_drag_pos = event.globalPos() - self.pos()
+            event.accept()
+            self.setCursor(QCursor(Qt.OpenHandCursor))
+
+    def mouseMoveEvent(self, event):
+        if self.is_follow_mouse and Qt.LeftButton:
+            self.move(event.globalPos() - self.mouse_drag_pos)
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        self.is_follow_mouse = False
+        self.setCursor(QCursor(Qt.ArrowCursor))
 
 class testWindow(QWidget):
     def __init__(self, parent=None, **kwargs):
         super(testWindow, self).__init__(parent)
-        self.setWindowFlag(int(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint))
+        #self.setWindowFlag(int(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint))
         self.setAutoFillBackground(False)
-        self.playGIF('Resources/test.gif', True)
+        self.playGIF('Resources/test.gif', False)
         self.showTrayMenu()
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
@@ -58,7 +77,7 @@ class testWindow(QWidget):
             self.mouse_drag_pos = event.globalPos() - self.pos()
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
-        #    self.movie.start()
+            #self.movie.start()
 
     '''重载鼠标双击事件'''
     def mouseDoubleClickEvent(self, event):
@@ -79,7 +98,7 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
-    #    self.movie.stop()
+        #self.movie.stop()
 
     def moveEvent(self, event):
         pass
@@ -124,7 +143,8 @@ class testWindow(QWidget):
         self.curWidth = self.curHeight = 128
         if not os.path.isfile(path=path):
             raise ValueError
-        self.label = QLabel(self)
+        #self.label = QLabel(self)
+        self.label = gifLabel(self)
         self.movie = QMovie(path)
         self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
         self.label.setMovie(self.movie)
