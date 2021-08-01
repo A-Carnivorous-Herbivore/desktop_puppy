@@ -7,6 +7,7 @@ import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5 import QtMultimedia
 from PyQt5 import *
 from random import *
 from PIL import Image
@@ -162,11 +163,16 @@ class testWindow(QWidget):
         self.hideAction = QAction("Hide", self, triggered=self.hide)
         self.showAction = QAction("Show", self, triggered=self.show)
         self.quitAction = QAction("Quit", self, triggered=self.quit)
+        self.barkAction = QAction("Bark", self, triggered=self.bark)
         self.menu.addAction(self.restAction)
-        self.menu.addAction(self.quitAction)
         self.menu.addAction(self.stopAction)
+        self.menu.addAction(self.barkAction)
         self.menu.addAction(self.hideAction)
         self.menu.addAction(self.showAction)
+        self.menu.addAction(self.quitAction)
+
+
+
         self.tray = QSystemTrayIcon(self)
         self.tray.setIcon(QIcon('Resources/trayIcon_duck.png'))
         self.tray.setContextMenu(self.menu)
@@ -192,6 +198,11 @@ class testWindow(QWidget):
     def quit(self):
         qApp.quit()
         sys.exit()
+
+    def bark(self):
+        QtMultimedia.QSound.play('Resources/bark.wav')
+
+
 
 if __name__ == '__main__':
 
