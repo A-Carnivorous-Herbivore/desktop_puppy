@@ -44,9 +44,9 @@ class testWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
         self.lockToCorner()
-        #self.timer = QTimer(self)
-        #self.timer.timeout.connect(self.responseTimer)
-        #self.timerCall()
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.responseTimer)
+        self.timerCall()
 
         # self.is_running_action = False
         # self.action_images = []
@@ -85,6 +85,7 @@ class testWindow(QWidget):
             self.mouse_drag_pos = event.globalPos() - self.pos()
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
+            self.timer.stop()
             #self.movie.start()
 
     '''重载鼠标双击事件'''
@@ -107,6 +108,7 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
+        self.timer.start()
         #self.movie.stop()
 
     def moveEvent(self, event):
@@ -172,6 +174,7 @@ class testWindow(QWidget):
         self.restAction = QAction("Rest", self, triggered=self.rest)
         self.hideAction = QAction("Hide", self, triggered=self.hide)
         self.showAction = QAction("Show", self, triggered=self.show)
+        self.setTimeAction = QAction
         self.quitAction = QAction("Quit", self, triggered=self.quit)
         self.barkAction = QAction("Bark", self, triggered=self.bark)
 
