@@ -86,6 +86,7 @@ class testWindow(QWidget):
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
             self.timer.stop()
+
             #self.movie.start()
 
     '''重载鼠标双击事件'''
@@ -107,6 +108,7 @@ class testWindow(QWidget):
     '''重载鼠标释放事件'''
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
+        self.timer.start(1000)
         self.setCursor(QCursor(Qt.ArrowCursor))
         self.timer.start()
         #self.movie.stop()
