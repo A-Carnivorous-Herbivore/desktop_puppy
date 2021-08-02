@@ -49,9 +49,11 @@ class testWindow(QWidget):
         self.firstTimerValue = 5000
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.responseTimer)
-        self.timerCall()
+
         self.secondTimer = QTimer(self)
         self.secondTimer.timeout.connect(self.secondTimerResponse)
+
+        self.timerCall()
 
         # self.is_running_action = False
         # self.action_images = []
@@ -232,6 +234,7 @@ class testWindow(QWidget):
         self.startTimer()
 
     def startTimer(self):
+        print(1)
         self.timer.start(self.firstTimerValue)
 
 
@@ -241,18 +244,31 @@ class testWindow(QWidget):
         #print(dest_x, dest_y)
         self.counter = 0
         self.boolIndicator = 0
-        while self.counter < 20:
+        # while self.counter < 20:
+        #
+        #     if(self.boolIndicator == 0):
+        #         self.secondTimer.start(500)
+        #         self.boolIndicator = 1
+        #     else:
+        #         print(2)
+        self.timer.stop()
+        self.startTimer2()
 
-            if(self.boolIndicator == 0):
-                self.secondTimer.start(1)
-                self.boolIndicator = 1
-
-        self.secondTimer.stop()
+    def startTimer2(self):
+        print(2)
+        self.secondTimer.start(500)
 
     def secondTimerResponse(self):
-        self.move(self.x()-2, self.y())
-        self.counter += 1
-        self.boolIndicator = 0
+        #print("timer2 counter" + self.counter)
+        if self.counter < 20:
+            print("timer2 update")
+            self.move(self.x()-2, self.y())
+            self.counter += 1
+        else:
+            print("timer1 update")
+            self.secondTimer.stop()
+            self.startTimer()
+        # self.boolIndicator = 0
 
 
 
