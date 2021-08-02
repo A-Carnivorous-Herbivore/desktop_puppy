@@ -44,9 +44,12 @@ class testWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
         self.lockToCorner()
+        self.firstTimerValue = 5000
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.responseTimer)
         self.timerCall()
+        self.secondTimer = QTimer(self)
+        self.secondTimer.timeout.connect(self.secondTimerResponse)
 
         # self.is_running_action = False
         # self.action_images = []
@@ -108,12 +111,10 @@ class testWindow(QWidget):
     '''重载鼠标释放事件'''
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
-        self.timer.start(1000)
         self.setCursor(QCursor(Qt.ArrowCursor))
-<<<<<<< HEAD
-        self.timer.start(1000)
-=======
->>>>>>> 46f261e (small change on parameter)
+
+        self.timer.start(self.firstTimerValue)
+
         #self.movie.stop()
 
     def moveEvent(self, event):
@@ -229,14 +230,22 @@ class testWindow(QWidget):
         self.startTimer()
 
     def startTimer(self):
-        self.timer.start(500)
+        self.timer.start(self.firstTimerValue)
 
 
     def responseTimer(self):
         #dest_x = self.x() - 5
         #dest_y = self.y()
         #print(dest_x, dest_y)
+        for i in range(0,20):
+            self.secondTimer.start(100)
+            self.secondTimerResponse()
+        self.secondTimer.stop()
+
+    def secondTimerResponse(self):
         self.move(self.x()-2, self.y())
+
+
 
 
         
