@@ -43,6 +43,10 @@ class testWindow(QWidget):
         self.showTrayMenu()
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
+        self.lockToCorner()
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.responseTimer)
+        self.timerCall()
         # self.is_running_action = False
         # self.action_images = []
         # self.action_pointer = 1
@@ -205,9 +209,19 @@ class testWindow(QWidget):
     def bark(self):
         QtMultimedia.QSound.play('Resources/bark.wav')
 
-    def datePrint(self):
-        date = QDate.currentDate()
-        print(date.toString())
+    def timerCall(self):
+        time = QDateTime.currentDateTime()
+        timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
+       # self.label.setText(timeDisplay)
+        print("Current time is "+timeDisplay)
+        self.startTimer()
+
+    def startTimer(self):
+        self.timer.start(1000)
+
+    def responseTimer(self):
+        print(1)
+
         
 
 
