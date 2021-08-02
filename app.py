@@ -108,7 +108,7 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
-        self.timer.start()
+        self.timer.start(1000)
         #self.movie.stop()
 
     def moveEvent(self, event):
@@ -227,6 +227,11 @@ class testWindow(QWidget):
         self.timer.start(1000)
 
     def responseTimer(self):
+        #dest_x = self.x() - 5
+        #dest_y = self.y()
+        #print(dest_x, dest_y)
+        for i in range(0, 5):
+            self.move(self.x()-1, self.y())
         print(1)
 
         
