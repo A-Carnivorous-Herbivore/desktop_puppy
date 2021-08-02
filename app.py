@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtMultimedia
+from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5 import *
 from random import *
 from PIL import Image
@@ -15,6 +16,8 @@ from PIL import Image
 class gifLabel(QLabel):
     def __init__(self, *args, **kwargs):
         QLabel.__init__(self, *args, **kwargs)
+        date = QDate.currentDate()
+        print(date.toString())
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -164,6 +167,7 @@ class testWindow(QWidget):
         self.showAction = QAction("Show", self, triggered=self.show)
         self.quitAction = QAction("Quit", self, triggered=self.quit)
         self.barkAction = QAction("Bark", self, triggered=self.bark)
+
         self.menu.addAction(self.restAction)
         self.menu.addAction(self.stopAction)
         self.menu.addAction(self.barkAction)
