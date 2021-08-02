@@ -16,8 +16,7 @@ from PIL import Image
 class gifLabel(QLabel):
     def __init__(self, *args, **kwargs):
         QLabel.__init__(self, *args, **kwargs)
-        date = QDate.currentDate()
-        print(date.toString())
+
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -205,6 +204,11 @@ class testWindow(QWidget):
 
     def bark(self):
         QtMultimedia.QSound.play('Resources/bark.wav')
+
+    def datePrint(self):
+        date = QDate.currentDate()
+        print(date.toString())
+        
 
 
 
