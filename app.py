@@ -11,6 +11,8 @@ from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5 import *
 from random import *
+from datetime import *
+import random
 from PIL import Image
 
 # class gifLabel(QLabel):
@@ -243,7 +245,7 @@ class testWindow(QWidget):
         #dest_y = self.y()
         #print(dest_x, dest_y)
         self.counter = 0
-        self.boolIndicator = 0
+        #self.boolIndicator = 0
         # while self.counter < 20:
         #
         #     if(self.boolIndicator == 0):
@@ -252,20 +254,25 @@ class testWindow(QWidget):
         #     else:
         #         print(2)
         self.timer.stop()
+       # random.seed(datetime.now())
+        self.deltaX = (random.random()*10) - 5
+        self.deltaY = (random.random()*10) - 5
+        print(self.deltaX)
         self.startTimer2()
 
     def startTimer2(self):
-        print(2)
-        self.secondTimer.start(500)
+        #print(2)
+        self.secondTimer.start(30)
 
     def secondTimerResponse(self):
         #print("timer2 counter" + self.counter)
+
         if self.counter < 20:
-            print("timer2 update")
-            self.move(self.x()-2, self.y())
+           # print("timer2 update")
+            self.move(self.x()-self.deltaX, self.y()-self.deltaY)
             self.counter += 1
         else:
-            print("timer1 update")
+           # print("timer1 update")
             self.secondTimer.stop()
             self.startTimer()
         # self.boolIndicator = 0
