@@ -41,6 +41,8 @@ class testWindow(QWidget):
         self.setAutoFillBackground(False)
         self.playGIF('Resources/test.gif', False)
         self.showTrayMenu()
+        self.counter = 0
+        self.boolIndicator = 0
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
         self.lockToCorner()
@@ -237,13 +239,22 @@ class testWindow(QWidget):
         #dest_x = self.x() - 5
         #dest_y = self.y()
         #print(dest_x, dest_y)
-        for i in range(0,20):
-            self.secondTimer.start(100)
-            self.secondTimerResponse()
+        self.counter = 0
+        self.boolIndicator = 0
+        while self.counter < 20:
+
+            if(self.boolIndicator == 0):
+                self.secondTimer.start(1)
+                self.boolIndicator = 1
+
         self.secondTimer.stop()
 
     def secondTimerResponse(self):
         self.move(self.x()-2, self.y())
+        self.counter += 1
+        self.boolIndicator = 0
+
+
 
 
 
