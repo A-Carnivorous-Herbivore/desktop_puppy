@@ -236,7 +236,7 @@ class testWindow(QWidget):
         self.startTimer()
 
     def startTimer(self):
-        print(1)
+        #print(1)
         self.timer.start(self.firstTimerValue)
 
 
@@ -254,10 +254,12 @@ class testWindow(QWidget):
         #     else:
         #         print(2)
         self.timer.stop()
-       # random.seed(datetime.now())
+        random.seed(datetime.now())
         self.deltaX = (random.random()*10) - 5
         self.deltaY = (random.random()*10) - 5
-        print(self.deltaX)
+        if self.deltaX < 0:
+            self.playGIF('Resources/mirrored.gif', False)
+        #print(self.deltaX)
         self.startTimer2()
 
     def startTimer2(self):
@@ -268,9 +270,16 @@ class testWindow(QWidget):
         #print("timer2 counter" + self.counter)
 
         if self.counter < 20:
-           # print("timer2 update")
-            self.move(self.x()-self.deltaX, self.y()-self.deltaY)
-            self.counter += 1
+            if(self.deltaX >= 0):
+                 # print("timer2 update")
+                self.move(self.x()-self.deltaX, self.y()-self.deltaY)
+                self.counter += 1
+            elif self.deltaX < 0:
+                print("x is" + str(self.deltaX))
+
+                self.move(self.x()-self.deltaX, self.y()-self.deltaY)
+                self.counter += 1
+
         else:
            # print("timer1 update")
             self.secondTimer.stop()
