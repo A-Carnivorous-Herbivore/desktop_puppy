@@ -275,7 +275,7 @@ class testWindow(QWidget):
                 self.move(self.x()-self.deltaX, self.y()-self.deltaY)
                 self.counter += 1
             elif self.deltaX < 0:
-                print("x is" + str(self.deltaX))
+               # print("x is" + str(self.deltaX))
 
                 self.move(self.x()-self.deltaX, self.y()-self.deltaY)
                 self.counter += 1
