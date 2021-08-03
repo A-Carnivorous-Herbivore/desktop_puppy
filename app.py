@@ -9,6 +9,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
+from PyQt5.QtGui import QMovie
 from PyQt5 import *
 from random import *
 from datetime import *
@@ -232,7 +233,8 @@ class testWindow(QWidget):
         time = QDateTime.currentDateTime()
         timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
        # self.label.setText(timeDisplay)
-        print("Current time is "+timeDisplay)
+        self.text = QLabel(self)
+        self.text.setText("Current time is "+timeDisplay)
         self.startTimer()
 
     def startTimer(self):
@@ -257,8 +259,24 @@ class testWindow(QWidget):
         random.seed(datetime.now())
         self.deltaX = (random.random()*10) - 5
         self.deltaY = (random.random()*10) - 5
-        if self.deltaX < 0:
-            self.playGIF('Resources/mirrored.gif', False)
+        print(self.deltaX)
+
+        if self.deltaX >= 0:
+            print("To the left")
+            self.label = QLabel(self)
+            self.movie = QMovie('Resources/test.gif')
+            self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
+            self.label.setMovie(self.movie)
+            self.resize(self.curWidth, self.curHeight)
+            self.movie.start()
+        elif self.deltaX < 0:
+            print("To the right")
+            self.label = QLabel(self)
+            self.movie = QMovie('Resources/mirrored.gif')
+            self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
+            self.label.setMovie(self.movie)
+            self.resize(self.curWidth, self.curHeight)
+            self.movie.start()
         #print(self.deltaX)
         self.startTimer2()
 
@@ -272,12 +290,12 @@ class testWindow(QWidget):
         if self.counter < 20:
             if(self.deltaX >= 0):
                  # print("timer2 update")
-                self.move(self.x()-self.deltaX, self.y()-self.deltaY)
+                self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
                 self.counter += 1
             elif self.deltaX < 0:
                # print("x is" + str(self.deltaX))
 
-                self.move(self.x()-self.deltaX, self.y()-self.deltaY)
+                self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
                 self.counter += 1
 
         else:
