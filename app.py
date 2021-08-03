@@ -262,7 +262,7 @@ class testWindow(QWidget):
 
     def startTimer2(self):
         #print(2)
-        self.secondTimer.start(30)
+        self.secondTimer.start(40)
 
     def secondTimerResponse(self):
         #print("timer2 counter" + self.counter)
