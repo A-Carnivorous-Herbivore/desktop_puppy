@@ -112,6 +112,19 @@ class testWindow(QWidget):
     '''重载鼠标移动事件'''
     def mouseMoveEvent(self, event):
         if Qt.LeftButton and self.is_follow_mouse:
+            print(self.mouse_drag_pos.x())
+            if self.mouse_drag_pos.x() < 0:
+                self.movie = QMovie('Resources/test.gif')
+                self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
+                self.label.setMovie(self.movie)
+                self.resize(self.curWidth, self.curHeight)
+                self.movie.start()
+            else:
+                self.movie = QMovie('Resources/mirrored.gif')
+                self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
+                self.label.setMovie(self.movie)
+                self.resize(self.curWidth, self.curHeight)
+                self.movie.start()
             self.move(event.globalPos() - self.mouse_drag_pos)
             event.accept()
 
@@ -259,11 +272,11 @@ class testWindow(QWidget):
         random.seed(datetime.now())
         self.deltaX = (random.random()*10) - 5
         self.deltaY = (random.random()*10) - 5
-        print(self.deltaX)
+        #print(self.deltaX)
 
         if self.deltaX >= 0:
             print("To the left")
-            self.label = QLabel(self)
+            #self.label = QLabel(self)
             self.movie = QMovie('Resources/test.gif')
             self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
             self.label.setMovie(self.movie)
@@ -271,7 +284,7 @@ class testWindow(QWidget):
             self.movie.start()
         elif self.deltaX < 0:
             print("To the right")
-            self.label = QLabel(self)
+            #self.label = QLabel(self)
             self.movie = QMovie('Resources/mirrored.gif')
             self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
             self.label.setMovie(self.movie)
@@ -288,15 +301,11 @@ class testWindow(QWidget):
         #print("timer2 counter" + self.counter)
 
         if self.counter < 20:
-            if(self.deltaX >= 0):
+
                  # print("timer2 update")
                 self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
                 self.counter += 1
-            elif self.deltaX < 0:
-               # print("x is" + str(self.deltaX))
 
-                self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
-                self.counter += 1
 
         else:
            # print("timer1 update")
