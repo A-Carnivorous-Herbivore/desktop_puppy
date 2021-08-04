@@ -37,6 +37,8 @@ from PIL import Image
 #         self.is_follow_mouse = False
 #         self.setCursor(QCursor(Qt.ArrowCursor))
 
+
+
 class testWindow(QWidget):
     def __init__(self, parent=None, **kwargs):
         super(testWindow, self).__init__(parent)
@@ -49,15 +51,18 @@ class testWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
         self.lockToCorner()
+        '''First Timer'''
         self.firstTimerValue = 5000
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.responseTimer)
-
+        '''Second Timer'''
         self.secondTimer = QTimer(self)
         self.secondTimer.timeout.connect(self.secondTimerResponse)
 
         self.timerCall()
-
+        '''Count-down Timer'''
+        self.countDTimer = QTimer(self)
+        self.countDTimer.timeout.connect(self.countDTimerResponse)
         # self.is_running_action = False
         # self.action_images = []
         # self.action_pointer = 1
@@ -205,10 +210,11 @@ class testWindow(QWidget):
         self.restAction = QAction("Rest", self, triggered=self.rest)
         self.hideAction = QAction("Hide", self, triggered=self.hide)
         self.showAction = QAction("Show", self, triggered=self.show)
-        self.setTimeAction = QAction
+        self.timerAction = QAction("Timer", self, triggered=self.setTime)
         self.quitAction = QAction("Quit", self, triggered=self.quit)
         self.barkAction = QAction("Bark", self, triggered=self.bark)
 
+        self.menu.addAction(self.timerAction)
         self.menu.addAction(self.restAction)
         self.menu.addAction(self.stopAction)
         self.menu.addAction(self.barkAction)
@@ -216,12 +222,49 @@ class testWindow(QWidget):
         self.menu.addAction(self.showAction)
         self.menu.addAction(self.quitAction)
 
-
-
         self.tray = QSystemTrayIcon(self)
         self.tray.setIcon(QIcon('Resources/trayIcon_duck.png'))
         self.tray.setContextMenu(self.menu)
         self.tray.show()
+
+    def setTime(self):
+        self.timeWindow = QWidget()
+        self.timeWindow.setWindowTitle("Timer")
+        genLabel = QLabel("Take a Break After: ")
+        self.line1 = QLineEdit()
+        self.line2 = QLineEdit()
+        self.line3 = QLineEdit()
+        hourButton = QLabel("Hours")
+        minuteButton = QLabel("Minutes")
+        secondButton = QLabel("Second")
+        finish = QPushButton("OK")
+        layout = QGridLayout()
+        layout.addWidget(genLabel,0,0)
+        layout.addWidget(self.line1,1,0)
+        layout.addWidget(hourButton,1,1)
+        layout.addWidget(self.line2,2,0)
+        layout.addWidget(minuteButton,2,1)
+        layout.addWidget(self.line3,3,0)
+        layout.addWidget(secondButton,3,1)
+        layout.addWidget(finish,4,2)
+        self.timeWindow.setLayout(layout)
+        finish.clicked.connect(self.showDialog)
+
+        self.timeWindow.show()
+
+    def showDialog(self):
+
+        cdHour = int(self.line1.text())
+        cdMin = int(self.line2.text())
+        cdSec = int(self.line3.text())
+        reply = QMessageBox.information(self, "Timer Setup", "Start Alarm Clock",
+                                        QMessageBox.Yes | QMessageBox.No)
+        if reply:
+            time = cdHour*3600 + cdMin*60 + cdSec
+            self.countDTimer.start(time * 1000)
+            self.timeWindow.close()
+            # print(cdHour, cdMin, cdSec)
+
 
     def stop(self):
         if not self.is_running_action:
@@ -250,29 +293,19 @@ class testWindow(QWidget):
     def timerCall(self):
         time = QDateTime.currentDateTime()
         timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
-       # self.label.setText(timeDisplay)
+        '''display time in pop-up window'''
+        time = QMessageBox.about(self, "Current Time", timeDisplay)
+        # self.label.setText(timeDisplay)
         self.text = QLabel(self)
-        self.text.setText("Current time is "+timeDisplay)
+        # self.text.setText("Current time is "+timeDisplay)
         self.startTimer()
 
     def startTimer(self):
-        #print(1)
         self.timer.start(self.firstTimerValue)
 
 
     def responseTimer(self):
-        #dest_x = self.x() - 5
-        #dest_y = self.y()
-        #print(dest_x, dest_y)
         self.counter = 0
-        #self.boolIndicator = 0
-        # while self.counter < 20:
-        #
-        #     if(self.boolIndicator == 0):
-        #         self.secondTimer.start(500)
-        #         self.boolIndicator = 1
-        #     else:
-        #         print(2)
         self.timer.stop()
         random.seed(datetime.now())
         self.deltaX = (random.random()*10) - 5
@@ -304,19 +337,19 @@ class testWindow(QWidget):
 
     def secondTimerResponse(self):
         #print("timer2 counter" + self.counter)
-
         if self.counter < 20:
-
                  # print("timer2 update")
                 self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
                 self.counter += 1
-
-
         else:
            # print("timer1 update")
             self.secondTimer.stop()
             self.startTimer()
-        # self.boolIndicator = 0
+
+    def countDTimerResponse(self):
+        self.countDTimer.stop()
+        output = QMessageBox.about(self, "Break Time!", "Time for a walk")
+
 
 
 
