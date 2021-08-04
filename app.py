@@ -129,7 +129,7 @@ class testWindow(QWidget):
                 self.label.setMovie(self.movie)
                 self.resize(self.curWidth, self.curHeight)
                 self.movie.start()
-            self.initX = self.x()
+            self.initX = self.x() 
             self.move(event.globalPos() - self.mouse_drag_pos)
             event.accept()
 
