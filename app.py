@@ -58,7 +58,7 @@ class testWindow(QWidget):
         '''Second Timer'''
         self.secondTimer = QTimer(self)
         self.secondTimer.timeout.connect(self.secondTimerResponse)
-
+        self.direct = 1;
         self.timerCall()
         '''Count-down Timer'''
         self.countDTimer = QTimer(self)
@@ -123,12 +123,14 @@ class testWindow(QWidget):
             #print(self.x())
             #event.globalX() - self.x()
             if  self.x() < self.initX:
+                #self.direct = 1
                 self.movie = QMovie('Resources/test.gif')
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
                 self.label.setMovie(self.movie)
                 self.resize(self.curWidth, self.curHeight)
                 self.movie.start()
             elif self.x() > self.initX:
+                #self.direct = 0
                 self.movie = QMovie('Resources/mirrored.gif')
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
                 self.label.setMovie(self.movie)
@@ -142,7 +144,6 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
-
         self.timer.start(self.firstTimerValue)
 
         #self.movie.stop()
@@ -253,10 +254,15 @@ class testWindow(QWidget):
         self.timeWindow.show()
 
     def showDialog(self):
-
-        cdHour = int(self.line1.text())
-        cdMin = int(self.line2.text())
-        cdSec = int(self.line3.text())
+        cdHour = 0
+        cdMin = 0
+        cdSec = 0
+        if self.line1.text() != '':
+            cdHour = int(self.line1.text())
+        if self.line2.text() != '':
+            cdMin = int(self.line2.text())
+        if self.line3.text() != '':
+            cdSec = int(self.line3.text())
         reply = QMessageBox.information(self, "Timer Setup", "Start Alarm Clock",
                                         QMessageBox.Yes | QMessageBox.No)
         if reply:
@@ -295,6 +301,7 @@ class testWindow(QWidget):
         timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
         '''display time in pop-up window'''
         time = QMessageBox.about(self, "Current Time", timeDisplay)
+        
         # self.label.setText(timeDisplay)
         self.text = QLabel(self)
         # self.text.setText("Current time is "+timeDisplay)
@@ -348,6 +355,7 @@ class testWindow(QWidget):
 
     def countDTimerResponse(self):
         self.countDTimer.stop()
+        self.bark()
         output = QMessageBox.about(self, "Break Time!", "Time for a walk")
 
 
