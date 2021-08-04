@@ -96,6 +96,7 @@ class testWindow(QWidget):
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
             self.timer.stop()
+            self.initX = self.x()
 
             #self.movie.start()
 
@@ -112,14 +113,17 @@ class testWindow(QWidget):
     '''重载鼠标移动事件'''
     def mouseMoveEvent(self, event):
         if Qt.LeftButton and self.is_follow_mouse:
-            print(self.mouse_drag_pos.x())
-            if self.mouse_drag_pos.x() < 0:
+            #print(self.mouse_drag_pos.x())
+            #print(event.globalX())
+            #print(self.x())
+            #event.globalX() - self.x()
+            if  self.x() < self.initX:
                 self.movie = QMovie('Resources/test.gif')
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
                 self.label.setMovie(self.movie)
                 self.resize(self.curWidth, self.curHeight)
                 self.movie.start()
-            else:
+            elif self.x() > self.initX:
                 self.movie = QMovie('Resources/mirrored.gif')
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
                 self.label.setMovie(self.movie)
