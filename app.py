@@ -3,6 +3,7 @@
 
 import sys
 import os
+import pygame
 import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -10,6 +11,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtGui import QMovie
+from multiprocessing import Process
 
 
 from playsound import playsound
@@ -71,9 +73,9 @@ class testWindow(QWidget):
         self.countDTimer = QTimer(self)
         self.countDTimer.timeout.connect(self.countDTimerResponse)
         '''使用地天气，疫情信息等'''
-        #self.getIPInformation()
-        #self.diseaseInfo()
-        #self.information()
+        self.getIPInformation()
+        self.diseaseInfo()
+        self.information()
 
         self.is_running_action = True
         self.timer.start(self.firstTimerValue)
@@ -353,17 +355,25 @@ class testWindow(QWidget):
     #     if not self.is_running_action:
     #         self.movie.stop()
     def music(self):
-        sound_file = 'Resources/music.wav'
-        self.sound = QtMultimedia.QSound(sound_file)
+        #sound_file = 'Resources/music.wav'
+        #self.sound = QtMultimedia.QSound(sound_file)
+        #self.musicProcess = Process(target = self.musicProcess)
+        #self.musicProcess.start()
         #self.musicThread =
+        pygame.init()
+        self.bgm = pygame.mixer.music.load('Resources/music.wav')
+        pygame.mixer.music.play(-1)
 
 
-        self.sound.play()
-        self.sound.setLoops(-1)
+        #self.sound.play()
+        #self.sound.setLoops(-1)
         #QtMultimedia.QSound.play('Resources/music.wav')
+
     def silent(self):
         #QtMultimedia.QSound.stop()
-        self.sound.stop()
+        #self.musicProcess.join()
+        pygame.mixer.music.stop()
+
         #QThread.stop()
     def rest(self):
         '''替换狗子图片为休息'''
