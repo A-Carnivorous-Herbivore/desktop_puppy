@@ -54,7 +54,7 @@ class testWindow(QWidget):
         self.boolIndicator = 0
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
-        # self.lockToCorner()
+        self.lockToCorner()
         '''First Timer'''
         self.firstTimerValue = 5000
         self.timer = QTimer(self)
@@ -63,13 +63,17 @@ class testWindow(QWidget):
         self.secondTimer = QTimer(self)
         self.secondTimer.timeout.connect(self.secondTimerResponse)
         self.direct = 1;
-        self.timerCall()
+        # self.timerCall()
         '''Count-down Timer'''
         self.countDTimer = QTimer(self)
         self.countDTimer.timeout.connect(self.countDTimerResponse)
-        #self.getIPInformation()
-        #self.diseaseInfo()
-        # self.is_running_action = False
+        '''使用地天气，疫情信息等'''
+        # self.getIPInformation()
+        # self.diseaseInfo()
+        # self.information()
+
+        self.is_running_action = True
+        self.timer.start(self.firstTimerValue)
         # self.action_images = []
         # self.action_pointer = 1
         # self.action_max_len = 0
@@ -109,17 +113,17 @@ class testWindow(QWidget):
         #lat = data['latitude']
         #lon = data['longitude']
         #print(lat)
-        weather = requests.get("http://api.openweathermap.org/data/2.5/weather?lat="+str(self.latitude)+"&lon="+str(self.longitude)+"&appid="+"5d48290001297c0b05a77ad26cbf3907")
-        weather = weather.json()
+        self.weather = requests.get("http://api.openweathermap.org/data/2.5/weather?lat="+str(self.latitude)+"&lon="+str(self.longitude)+"&appid="+"5d48290001297c0b05a77ad26cbf3907")
+        self.weather = self.weather.json()
         #print(weather)
-        location = self.city
-        description = weather['weather'][0]['description']
-        temperature = weather['main']['temp']
+        self.location = self.city
+        self.description = self.weather['weather'][0]['description']
+        temperature = self.weather['main']['temp']
         temperature -= 273.15
-        temperature = int(temperature)
-        #print(description)
-        #print(temperature)
-        #print(location)
+        self.temperature = int(temperature)
+        print(self.description)
+        print(self.temperature)
+        print(self.location)
 
     # def changeImage(self, path: str, lock: bool):
     #     self.label = QLabel(self)
@@ -137,8 +141,8 @@ class testWindow(QWidget):
     def diseaseInfo(self):
         disease = requests.get("https://api.covid19api.com/dayone/country/"+self.country+"/status/confirmed")
         disease = disease.json()
-        self.TotalCase = disease[len(disease)-1]["Cases"]
-        self.increasedCase = self.TotalCase - disease[len(disease)-2]["Cases"]
+        self.totalCase = disease[len(disease)-1]["Cases"]
+        self.increasedCase = self.totalCase - disease[len(disease)-2]["Cases"]
         print(self.increasedCase)
         #print(disease)
 
@@ -269,9 +273,11 @@ class testWindow(QWidget):
         self.showAction = QAction("Show", self, triggered=self.show)
         self.timerAction = QAction("Timer", self, triggered=self.setTime)
         self.quitAction = QAction("Quit", self, triggered=self.quit)
+        self.infoAction = QAction("Info", self, triggered=self.info)
         self.barkAction = QAction("Bark", self, triggered=self.bark)
 
         self.menu.addAction(self.timerAction)
+        self.menu.addAction(self.infoAction)
         self.menu.addAction(self.restAction)
         self.menu.addAction(self.stopAction)
         self.menu.addAction(self.barkAction)
@@ -327,6 +333,8 @@ class testWindow(QWidget):
             self.timeWindow.close()
             # print(cdHour, cdMin, cdSec)
 
+    def info(self):
+        self.infoWindow.show()
 
     def stop(self):
         if not self.is_running_action:
@@ -358,20 +366,9 @@ class testWindow(QWidget):
     def bark(self):
         QtMultimedia.QSound.play('Resources/bark.wav')
 
-    def timerCall(self):
-        time = QDateTime.currentDateTime()
-        timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
-        '''display time in pop-up window'''
-        time = QMessageBox.about(self, "Current Time", timeDisplay)
-        self.lockToCorner()
-        QMessageBox.about(self, "Current Time", timeDisplay)
-
-
-
-        # self.label.setText(timeDisplay)
-        self.text = QLabel(self)
-        # self.text.setText("Current time is "+timeDisplay)
-        self.startTimer()
+    # def timerCall(self):
+    #     # self.text.setText("Current time is "+timeDisplay)
+    #     self.startTimer()
 
     def startTimer(self):
         self.timer.start(self.firstTimerValue)
@@ -409,13 +406,10 @@ class testWindow(QWidget):
         self.secondTimer.start(40)
 
     def secondTimerResponse(self):
-        #print("timer2 counter" + self.counter)
         if self.counter < 20:
-                 # print("timer2 update")
                 self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
                 self.counter += 1
         else:
-           # print("timer1 update")
             self.secondTimer.stop()
             self.startTimer()
 
@@ -424,9 +418,48 @@ class testWindow(QWidget):
         self.bark()
         output = QMessageBox.about(self, "Break Time!", "Time for a walk")
 
+    def information(self):
+        self.infoWindow = QWidget()
+        self.infoWindow.setWindowTitle("Information")
+        '''time display'''
+        label_t1 = QLabel("Current time is:")
+        time = QDateTime.currentDateTime()
+        timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
+        label_t2 = QLabel(timeDisplay)
+        '''Weather display'''
+        label_w1 = QLabel("City: " + self.location)
+        label_w2 = QLabel("Weather: " + self.description)
+        # label_w2a = QLabel(self.description)
+        label_w3 = QLabel("Temperature: " + str(self.temperature) + "℃")
+        # label_w3a = QLabel(self.temperature)
+        # label_w3b = QLabel("℃")
+        '''COVID display'''
+        label_c1 = QLabel("COVID-19 Info")
+        label_c2 = QLabel("Daily increase: " + str(self.increasedCase))
+        # label_c2a = QLabel(self.increasedCase)
+        label_c3 = QLabel("Total cases: " + str(self.totalCase))
+        # label_c3a = QLabel(self.totalCase)
+        '''display info in infoWindow'''
+        icon = QPushButton("OK")
+        icon.clicked.connect(self.closeInfoWindow)
+        layout = QGridLayout()
+        layout.addWidget(label_t1,0,0)
+        layout.addWidget(label_t2,1,0)
+        layout.addWidget(label_w1,2,0)
+        layout.addWidget(label_w2,3,0)
+        layout.addWidget(label_w3,4,0)
+        layout.addWidget(label_c1,5,0)
+        layout.addWidget(label_c2,7,0)
+        # layout.addWidget(label_c2a,7,1)
+        layout.addWidget(label_c3,8,0)
+        # layout.addWidget(label_c3a,8,1)
+        layout.addWidget(icon,9,3)
+        self.infoWindow.setLayout(layout)
 
+        self.infoWindow.show()
 
-
+    def closeInfoWindow(self):
+        self.infoWindow.close()
 
 
 
