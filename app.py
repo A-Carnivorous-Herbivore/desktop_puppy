@@ -67,9 +67,9 @@ class testWindow(QWidget):
         self.countDTimer = QTimer(self)
         self.countDTimer.timeout.connect(self.countDTimerResponse)
         '''使用地天气，疫情信息等'''
-        # self.getIPInformation()
-        # self.diseaseInfo()
-        # self.information()
+        self.getIPInformation()
+        self.diseaseInfo()
+        self.information()
 
         self.is_running_action = True
         self.timer.start(self.firstTimerValue)
