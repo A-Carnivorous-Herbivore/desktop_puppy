@@ -53,7 +53,6 @@ class testWindow(QWidget):
         self.counter = 0
         self.boolIndicator = 0
         self.setAttribute(Qt.WA_TranslucentBackground, True)
-        self.is_running_action = False
         self.lockToCorner()
         '''First Timer'''
         self.firstTimerValue = 5000
@@ -89,9 +88,9 @@ class testWindow(QWidget):
 
     def lockToCorner(self):
         sizeInfo = QDesktopWidget().screenGeometry()
-        horz = sizeInfo.width() - self.curWidth
-        vert = sizeInfo.height() - self.curHeight
-        self.move(horz, vert)
+        self.horz = sizeInfo.width() - self.curWidth
+        self.vert = sizeInfo.height() - self.curHeight
+        self.move(self.horz, self.vert)
 
     def getIPInformation(self):
         send_url = "http://api.ipstack.com/check?access_key=22557fbf2c4e3657e6a194bac14ce8da"
@@ -122,9 +121,9 @@ class testWindow(QWidget):
         temperature = self.weather['main']['temp']
         temperature -= 273.15
         self.temperature = int(temperature)
-        print(self.description)
-        print(self.temperature)
-        print(self.location)
+        # print(self.description)
+        # print(self.temperature)
+        # print(self.location)
 
     # def changeImage(self, path: str, lock: bool):
     #     self.label = QLabel(self)
@@ -152,7 +151,9 @@ class testWindow(QWidget):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.is_follow_mouse = True
-            self.mouse_drag_pos = event.globalPos() - self.pos()
+            # self.mouse_drag_pos = event.globalPos() - self.pos()
+            self.mouse_drag_x = event.globalX() - self.x()
+            self.mouse_drag_y = event.globalY() - self.y()
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))
             self.timer.stop()
@@ -188,7 +189,18 @@ class testWindow(QWidget):
                 self.resize(self.curWidth, self.curHeight)
                 self.movie.start()
             self.initX = self.x()
-            self.move(event.globalPos() - self.mouse_drag_pos)
+            tempX = event.globalX() - self.mouse_drag_x
+            tempY = event.globalY() - self.mouse_drag_y
+            if tempX > self.horz:
+                tempX = self.horz
+            elif tempX < 0:
+                tempX = 0
+            if tempY > self.vert:
+                tempY = self.vert
+            elif tempY < 0:
+                tempY = 0
+            # self.move(event.globalPos() - self.mouse_drag_pos)
+            self.move(tempX, tempY)
             event.accept()
 
     '''重载鼠标释放事件'''
@@ -409,10 +421,10 @@ class testWindow(QWidget):
     def checkPos(self):
         temp_x = self.x() - self.deltaX
         temp_y = self.y() - self.deltaY
-        sizeInfo = QDesktopWidget().screenGeometry()
-        horz = sizeInfo.width() - self.curWidth
-        vert = sizeInfo.height() - self.curHeight
-        if temp_x>horz or temp_y>vert or temp_x<0 or temp_y<0:
+        # sizeInfo = QDesktopWidget().screenGeometry()
+        # horz = sizeInfo.width() - self.curWidth
+        # vert = sizeInfo.height() - self.curHeight
+        if temp_x>self.horz or temp_y>self.vert or temp_x<0 or temp_y<0:
             return False
         else:
             return True
@@ -460,8 +472,6 @@ class testWindow(QWidget):
         self.infoWindow.close()
 
 
-
-        
 
 
 
