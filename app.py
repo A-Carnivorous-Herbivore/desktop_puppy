@@ -67,7 +67,8 @@ class testWindow(QWidget):
         '''Count-down Timer'''
         self.countDTimer = QTimer(self)
         self.countDTimer.timeout.connect(self.countDTimerResponse)
-        self.getIPInformation()
+        #self.getIPInformation()
+        #self.diseaseInfo()
         # self.is_running_action = False
         # self.action_images = []
         # self.action_pointer = 1
@@ -94,6 +95,10 @@ class testWindow(QWidget):
         self.latitude = geo_json['latitude']
         self.longitude = geo_json['longitude']
         self.city = geo_json['city']
+        self.country = geo_json['country_name']
+        #print(self.country)
+        #self.country = geo_json['country']
+        #print(self.country)
         #print(str(self.latitude)+" "+str(self.longitude)+ " "+self.city)
         #temp_url = "9d531ce76790e4d6030ab8d0ffdccdcd"
         #BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
@@ -112,14 +117,21 @@ class testWindow(QWidget):
         temperature = weather['main']['temp']
         temperature -= 273.15
         temperature = int(temperature)
-        print(description)
-        print(temperature)
-        print(location)
+        #print(description)
+        #print(temperature)
+        #print(location)
 
         #response = requests.get(URL)
         #print(108)
         #data = response.json()
         #print(data)
+    def diseaseInfo(self):
+        disease = requests.get("https://api.covid19api.com/dayone/country/"+self.country+"/status/confirmed")
+        disease = disease.json()
+        self.TotalCase = disease[len(disease)-1]["Cases"]
+        self.increasedCase = self.TotalCase - disease[len(disease)-2]["Cases"]
+        print(self.increasedCase)
+        #print(disease)
     def changeImage(self, path: str, lock: bool):
         self.label = QLabel(self)
         if not os.path.isfile(path=path):
