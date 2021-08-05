@@ -92,6 +92,7 @@ class testWindow(QWidget):
         horz = sizeInfo.width() - self.curWidth
         vert = sizeInfo.height() - self.curHeight
         self.move(horz, vert)
+
     def getIPInformation(self):
         send_url = "http://api.ipstack.com/check?access_key=22557fbf2c4e3657e6a194bac14ce8da"
         geo_req = requests.get(send_url)
@@ -138,6 +139,7 @@ class testWindow(QWidget):
         #print(108)
         #data = response.json()
         #print(data)
+
     def diseaseInfo(self):
         disease = requests.get("https://api.covid19api.com/dayone/country/"+self.country+"/status/confirmed")
         disease = disease.json()
@@ -160,21 +162,9 @@ class testWindow(QWidget):
 
     '''重载鼠标双击事件'''
     def mouseDoubleClickEvent(self, event):
-        # if self.is_rest:
-        #     self.movie = QMovie('Resources/test.gif')
-        #     self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
-        #     self.label.setMovie(self.movie)
-        #     self.resize(self.curWidth, self.curHeight)
-        #     self.movie.start()
-        #     self.timer.start(self.firstTimerValue)
-        # else:
-            if not self.is_running_action:
-                self.is_running_action = True
-                self.movie.start()
-                #self.moveEvent()
-            else:
-                self.is_running_action = False
-                self.movie.stop()
+        if self.is_running_action:
+            self.rest()
+            self.is_running_action = False
 
     '''重载鼠标移动事件'''
     def mouseMoveEvent(self, event):
@@ -183,7 +173,7 @@ class testWindow(QWidget):
             #print(event.globalX())
             #print(self.x())
             #event.globalX() - self.x()
-            if  self.x() < self.initX:
+            if self.x() < self.initX:
                 #self.direct = 1
                 self.movie = QMovie('Resources/test.gif')
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
@@ -205,7 +195,7 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
-
+        self.is_running_action = True
         self.timer.start(self.firstTimerValue)
 
     # def moveEvent(self, event):
@@ -407,11 +397,26 @@ class testWindow(QWidget):
 
     def secondTimerResponse(self):
         if self.counter < 20:
-                self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
-                self.counter += 1
+            while not self.checkPos():
+                self.deltaX = (random.random() * 10) - 5
+                self.deltaY = (random.random() * 10) - 5
+            self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
+            self.counter += 1
         else:
             self.secondTimer.stop()
             self.startTimer()
+
+    def checkPos(self):
+        temp_x = self.x() - self.deltaX
+        temp_y = self.y() - self.deltaY
+        sizeInfo = QDesktopWidget().screenGeometry()
+        horz = sizeInfo.width() - self.curWidth
+        vert = sizeInfo.height() - self.curHeight
+        if temp_x>horz or temp_y>vert or temp_x<0 or temp_y<0:
+            return False
+        else:
+            return True
+
 
     def countDTimerResponse(self):
         self.countDTimer.stop()
@@ -429,16 +434,11 @@ class testWindow(QWidget):
         '''Weather display'''
         label_w1 = QLabel("City: " + self.location)
         label_w2 = QLabel("Weather: " + self.description)
-        # label_w2a = QLabel(self.description)
         label_w3 = QLabel("Temperature: " + str(self.temperature) + "℃")
-        # label_w3a = QLabel(self.temperature)
-        # label_w3b = QLabel("℃")
         '''COVID display'''
         label_c1 = QLabel("COVID-19 Info")
         label_c2 = QLabel("Daily increase: " + str(self.increasedCase))
-        # label_c2a = QLabel(self.increasedCase)
         label_c3 = QLabel("Total cases: " + str(self.totalCase))
-        # label_c3a = QLabel(self.totalCase)
         '''display info in infoWindow'''
         icon = QPushButton("OK")
         icon.clicked.connect(self.closeInfoWindow)
@@ -450,9 +450,7 @@ class testWindow(QWidget):
         layout.addWidget(label_w3,4,0)
         layout.addWidget(label_c1,5,0)
         layout.addWidget(label_c2,7,0)
-        # layout.addWidget(label_c2a,7,1)
         layout.addWidget(label_c3,8,0)
-        # layout.addWidget(label_c3a,8,1)
         layout.addWidget(icon,9,3)
         self.infoWindow.setLayout(layout)
 
