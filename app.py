@@ -150,7 +150,7 @@ class testWindow(QWidget):
         disease = disease.json()
         self.totalCase = disease[len(disease)-1]["Cases"]
         self.increasedCase = self.totalCase - disease[len(disease)-2]["Cases"]
-        print(self.increasedCase)
+        #print(self.increasedCase)
         #print(disease)
 
     '''重载鼠标单击事件'''
@@ -419,7 +419,7 @@ class testWindow(QWidget):
         #print(self.deltaX)
 
         if self.deltaX >= 0:
-            print("To the left")
+            #print("To the left")
             #self.label = QLabel(self)
             self.movie = QMovie('Resources/test.gif')
             self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
@@ -427,7 +427,7 @@ class testWindow(QWidget):
             self.resize(self.curWidth, self.curHeight)
             self.movie.start()
         elif self.deltaX < 0:
-            print("To the right")
+            #print("To the right")
             #self.label = QLabel(self)
             self.movie = QMovie('Resources/mirrored.gif')
             self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
