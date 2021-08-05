@@ -300,8 +300,10 @@ class testWindow(QWidget):
         time = QDateTime.currentDateTime()
         timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
         '''display time in pop-up window'''
-        time = QMessageBox.about(self, "Current Time", timeDisplay)
-        
+        QMessageBox.about(self, "Current Time", timeDisplay)
+
+
+
         # self.label.setText(timeDisplay)
         self.text = QLabel(self)
         # self.text.setText("Current time is "+timeDisplay)
