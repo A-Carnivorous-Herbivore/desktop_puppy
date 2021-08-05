@@ -10,9 +10,13 @@ from PyQt5.QtCore import *
 from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtGui import QMovie
+import socket
 from PyQt5 import *
 from random import *
 from datetime import *
+import requests
+
+import json
 import random
 from PIL import Image
 
@@ -63,6 +67,7 @@ class testWindow(QWidget):
         '''Count-down Timer'''
         self.countDTimer = QTimer(self)
         self.countDTimer.timeout.connect(self.countDTimerResponse)
+        self.getIPInformation()
         # self.is_running_action = False
         # self.action_images = []
         # self.action_pointer = 1
@@ -82,7 +87,39 @@ class testWindow(QWidget):
         horz = sizeInfo.width() - self.curWidth
         vert = sizeInfo.height() - self.curHeight
         self.move(horz, vert)
+    def getIPInformation(self):
+        send_url = "http://api.ipstack.com/check?access_key=22557fbf2c4e3657e6a194bac14ce8da"
+        geo_req = requests.get(send_url)
+        geo_json = json.loads(geo_req.text)
+        self.latitude = geo_json['latitude']
+        self.longitude = geo_json['longitude']
+        self.city = geo_json['city']
+        #print(str(self.latitude)+" "+str(self.longitude)+ " "+self.city)
+        #temp_url = "9d531ce76790e4d6030ab8d0ffdccdcd"
+        #BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
+        #URL = BASE_URL + "q=" + "Hyderabad" + "&appid=" + temp_url
+        #host = socket.gethostbyname(socket.gethostname())
+        #data = requests.get("http://api.ipstack.com/" + host + "?access_key=" + "22557fbf2c4e3657e6a194bac14ce8da")
+        #data = data.json()
+        #lat = data['latitude']
+        #lon = data['longitude']
+        #print(lat)
+        weather = requests.get("http://api.openweathermap.org/data/2.5/weather?lat="+str(self.latitude)+"&lon="+str(self.longitude)+"&appid="+"5d48290001297c0b05a77ad26cbf3907")
+        weather = weather.json()
+        #print(weather)
+        location = self.city
+        description = weather['weather'][0]['description']
+        temperature = weather['main']['temp']
+        temperature -= 273.15
+        temperature = int(temperature)
+        print(description)
+        print(temperature)
+        print(location)
 
+        #response = requests.get(URL)
+        #print(108)
+        #data = response.json()
+        #print(data)
     def changeImage(self, path: str, lock: bool):
         self.label = QLabel(self)
         if not os.path.isfile(path=path):
@@ -377,7 +414,7 @@ if __name__ == '__main__':
     tW = testWindow()
     # tW.changeImage('shime1.png', True)
     tW.show()
-    print(tW.width(), tW.height())
+    #print(tW.width(), tW.height())
     # for i in range(1, 30):
     #     tW.changeImage('shime' + str(i) + '.png', False)
     #     time.sleep(1)
