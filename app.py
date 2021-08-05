@@ -54,7 +54,7 @@ class testWindow(QWidget):
         self.boolIndicator = 0
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.is_running_action = False
-        self.lockToCorner()
+        # self.lockToCorner()
         '''First Timer'''
         self.firstTimerValue = 5000
         self.timer = QTimer(self)
@@ -77,11 +77,11 @@ class testWindow(QWidget):
         # self.timer.timeout.connect(self.randomAct)
         # self.timer.start(500)
 
-    def showWindow(self):
-        self.show()
-
-    def hideWindow(self):
-        self.hide()
+    # def showWindow(self):
+    #     self.show()
+    #
+    # def hideWindow(self):
+    #     self.hide()
 
     def lockToCorner(self):
         sizeInfo = QDesktopWidget().screenGeometry()
@@ -121,6 +121,15 @@ class testWindow(QWidget):
         #print(temperature)
         #print(location)
 
+    # def changeImage(self, path: str, lock: bool):
+    #     self.label = QLabel(self)
+    #     if not os.path.isfile(path=path):
+    #         raise ValueError
+    #     self.pixmap = QPixmap(path)
+    #     self.label.setPixmap(self.pixmap)
+    #     self.resize(self.curWidth, self.curHeight)
+    #     if lock:
+    #         self.lockToCorner()
         #response = requests.get(URL)
         #print(108)
         #data = response.json()
@@ -132,15 +141,6 @@ class testWindow(QWidget):
         self.increasedCase = self.TotalCase - disease[len(disease)-2]["Cases"]
         print(self.increasedCase)
         #print(disease)
-    def changeImage(self, path: str, lock: bool):
-        self.label = QLabel(self)
-        if not os.path.isfile(path=path):
-            raise ValueError
-        self.pixmap = QPixmap(path)
-        self.label.setPixmap(self.pixmap)
-        self.resize(self.curWidth, self.curHeight)
-        if lock:
-            self.lockToCorner()
 
     '''重载鼠标单击事件'''
     def mousePressEvent(self, event):
@@ -156,13 +156,21 @@ class testWindow(QWidget):
 
     '''重载鼠标双击事件'''
     def mouseDoubleClickEvent(self, event):
-        if not self.is_running_action:
-            self.is_running_action = True
-            self.movie.start()
-            #self.moveEvent()
-        else:
-            self.is_running_action = False
-            self.movie.stop()
+        # if self.is_rest:
+        #     self.movie = QMovie('Resources/test.gif')
+        #     self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
+        #     self.label.setMovie(self.movie)
+        #     self.resize(self.curWidth, self.curHeight)
+        #     self.movie.start()
+        #     self.timer.start(self.firstTimerValue)
+        # else:
+            if not self.is_running_action:
+                self.is_running_action = True
+                self.movie.start()
+                #self.moveEvent()
+            else:
+                self.is_running_action = False
+                self.movie.stop()
 
     '''重载鼠标移动事件'''
     def mouseMoveEvent(self, event):
@@ -193,20 +201,19 @@ class testWindow(QWidget):
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
+
         self.timer.start(self.firstTimerValue)
 
-        #self.movie.stop()
-
-    def moveEvent(self, event):
-        pass
-        # print('moving')
-        # if random.randint(0, 10) % 2:
-        #     self.changeImage('shime1.png', False)
-        #     print("case 1")
-        # else:
-        #     self.changeImage('shime4.png', False)
-        #     print("case 2")
-        # event.accept()
+    # def moveEvent(self, event):
+    #     pass
+    #     # print('moving')
+    #     # if random.randint(0, 10) % 2:
+    #     #     self.changeImage('shime1.png', False)
+    #     #     print("case 1")
+    #     # else:
+    #     #     self.changeImage('shime4.png', False)
+    #     #     print("case 2")
+    #     # event.accept()
 
 
 
@@ -216,23 +223,23 @@ class testWindow(QWidget):
         action = menu.exec_(self.mapToGlobal(event.pos()))
         #pass
 
-    def randomAct(self):
-        if not self.is_running_action:
-            self.is_running_action = True
-            # self.action_images = random.choice(self.pet_images)
-            # self.action_max_len = len(self.action_images)
-            self.action_pointer = 1
-        self.runFrame()
-    '''完成动作的每一帧'''
+    # def randomAct(self):
+    #     if not self.is_running_action:
+    #         self.is_running_action = True
+    #         # self.action_images = random.choice(self.pet_images)
+    #         # self.action_max_len = len(self.action_images)
+    #         self.action_pointer = 1
+    #     self.runFrame()
+    # '''完成动作的每一帧'''
 
-    def runFrame(self):
-        if self.action_pointer == self.action_max_len:
-            self.is_running_action = False
-            # self.action_pointer = 0
-            # self.action_max_len = 0
-        print('shime' + str(self.action_pointer) + '.png')
-        self.changeImage('shime' + str(self.action_pointer) + '.png', False)
-        self.action_pointer += 1
+    # def runFrame(self):
+    #     if self.action_pointer == self.action_max_len:
+    #         self.is_running_action = False
+    #         # self.action_pointer = 0
+    #         # self.action_max_len = 0
+    #     print('shime' + str(self.action_pointer) + '.png')
+    #     self.changeImage('shime' + str(self.action_pointer) + '.png', False)
+    #     self.action_pointer += 1
 
     def playGIF(self, path: str, lock: bool):
         # with Image.open(path) as gif:
@@ -326,9 +333,15 @@ class testWindow(QWidget):
             self.movie.stop()
 
     def rest(self):
-        self.movie.stop()
+        '''替换狗子图片为休息'''
+        self.movie = QMovie('Resources/rest.gif')
+        self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
+        self.label.setMovie(self.movie)
+        self.resize(self.curWidth, self.curHeight)
+        self.movie.start()
         self.lockToCorner()
-        # 替换狗子图片为蹲坐（暂无图源）
+        self.timer.stop()
+
 
     def hide(self):
         if not self.is_running_action:
@@ -349,6 +362,8 @@ class testWindow(QWidget):
         time = QDateTime.currentDateTime()
         timeDisplay = time.toString('yyyy-MM-dd hh:mm:ss dddd')
         '''display time in pop-up window'''
+        time = QMessageBox.about(self, "Current Time", timeDisplay)
+        self.lockToCorner()
         QMessageBox.about(self, "Current Time", timeDisplay)
 
 
