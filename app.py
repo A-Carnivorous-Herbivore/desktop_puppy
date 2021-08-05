@@ -269,7 +269,9 @@ class testWindow(QWidget):
 
     def showTrayMenu(self):
         self.menu = QMenu()
-        self.stopAction = QAction("Stop", self, triggered=self.stop)
+        self.menu1 = QMenu()
+        self.menu1.setTitle("Manage")
+        # self.stopAction = QAction("Stop", self, triggered=self.stop)
         self.restAction = QAction("Rest", self, triggered=self.rest)
         self.hideAction = QAction("Hide", self, triggered=self.hide)
         self.showAction = QAction("Show", self, triggered=self.show)
@@ -280,12 +282,14 @@ class testWindow(QWidget):
 
         self.menu.addAction(self.timerAction)
         self.menu.addAction(self.infoAction)
-        self.menu.addAction(self.restAction)
-        self.menu.addAction(self.stopAction)
-        self.menu.addAction(self.barkAction)
-        self.menu.addAction(self.hideAction)
-        self.menu.addAction(self.showAction)
+        self.menu1.addAction(self.restAction)
+        # self.menu.addAction(self.stopAction)
+        self.menu1.addAction(self.hideAction)
+        self.menu1.addAction(self.showAction)
+        self.menu1.addAction(self.barkAction)
+        self.menu.addMenu(self.menu1)
         self.menu.addAction(self.quitAction)
+
 
         self.tray = QSystemTrayIcon(self)
         self.tray.setIcon(QIcon('Resources/trayIcon_duck.png'))
@@ -338,12 +342,13 @@ class testWindow(QWidget):
     def info(self):
         self.infoWindow.show()
 
-    def stop(self):
-        if not self.is_running_action:
-            self.movie.stop()
+    # def stop(self):
+    #     if not self.is_running_action:
+    #         self.movie.stop()
 
     def rest(self):
         '''替换狗子图片为休息'''
+        self.is_running_action = False
         self.movie = QMovie('Resources/rest.gif')
         self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
         self.label.setMovie(self.movie)
