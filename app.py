@@ -10,6 +10,9 @@ from PyQt5.QtCore import *
 from PyQt5 import QtMultimedia
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtGui import QMovie
+
+
+from playsound import playsound
 import socket
 from PyQt5 import *
 from random import *
@@ -18,6 +21,7 @@ import requests
 
 import json
 import random
+
 from PIL import Image
 
 # class gifLabel(QLabel):
@@ -67,9 +71,9 @@ class testWindow(QWidget):
         self.countDTimer = QTimer(self)
         self.countDTimer.timeout.connect(self.countDTimerResponse)
         '''使用地天气，疫情信息等'''
-        self.getIPInformation()
-        self.diseaseInfo()
-        self.information()
+        #self.getIPInformation()
+        #self.diseaseInfo()
+        #self.information()
 
         self.is_running_action = True
         self.timer.start(self.firstTimerValue)
@@ -270,24 +274,27 @@ class testWindow(QWidget):
     def showTrayMenu(self):
         self.menu = QMenu()
         self.menu1 = QMenu()
-        self.menu1.setTitle("Manage")
+        self.menu1.setTitle("Activities")
         # self.stopAction = QAction("Stop", self, triggered=self.stop)
         self.restAction = QAction("Rest", self, triggered=self.rest)
         self.hideAction = QAction("Hide", self, triggered=self.hide)
         self.showAction = QAction("Show", self, triggered=self.show)
         self.timerAction = QAction("Timer", self, triggered=self.setTime)
         self.quitAction = QAction("Quit", self, triggered=self.quit)
-        self.infoAction = QAction("Info", self, triggered=self.info)
+        self.infoAction = QAction("Daily Info", self, triggered=self.info)
         self.barkAction = QAction("Bark", self, triggered=self.bark)
-
-        self.menu.addAction(self.timerAction)
+        self.musicAction = QAction("Music", self, triggered = self.music)
+        self.silentAction = QAction("Silent", self, triggered = self.silent)
         self.menu.addAction(self.infoAction)
         self.menu1.addAction(self.restAction)
         # self.menu.addAction(self.stopAction)
         self.menu1.addAction(self.hideAction)
         self.menu1.addAction(self.showAction)
         self.menu1.addAction(self.barkAction)
+        self.menu1.addAction(self.musicAction)
+        self.menu1.addAction(self.silentAction)
         self.menu.addMenu(self.menu1)
+        self.menu.addAction(self.timerAction)
         self.menu.addAction(self.quitAction)
 
 
@@ -345,7 +352,19 @@ class testWindow(QWidget):
     # def stop(self):
     #     if not self.is_running_action:
     #         self.movie.stop()
+    def music(self):
+        sound_file = 'Resources/music.wav'
+        self.sound = QtMultimedia.QSound(sound_file)
+        #self.musicThread =
 
+
+        self.sound.play()
+        self.sound.setLoops(-1)
+        #QtMultimedia.QSound.play('Resources/music.wav')
+    def silent(self):
+        #QtMultimedia.QSound.stop()
+        self.sound.stop()
+        #QThread.stop()
     def rest(self):
         '''替换狗子图片为休息'''
         self.is_running_action = False
