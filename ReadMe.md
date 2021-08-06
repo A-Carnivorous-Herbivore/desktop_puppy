@@ -1,6 +1,20 @@
 ## Duck
 ### Duck Duck 
 
+## To Compile on macOS
+```
+# create Python 3 virtual environment
+python3 -m venv venv
+
+# install the dependencies from requirements.txt
+pip install -r requirements.txt
+
+# compile the app using PyInstaller
+pyinstaller --clean --noconfirm app.spec
+
+# now you may find the Duck.app file in ./dist/
+```
+
 ## Current Status 
 
 ### Already Done 
