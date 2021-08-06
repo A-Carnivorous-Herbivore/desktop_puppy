@@ -1,30 +1,27 @@
-#!/usr/bin/python3
-
-
-import sys
-import os
-import pygame
-import time
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5 import QtMultimedia
-from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
-from PyQt5.QtGui import QMovie
-from multiprocessing import Process
-
-
-from playsound import playsound
-import socket
-from PyQt5 import *
-from random import *
-from datetime import *
-import requests
-
 import json
+import os
 import random
+import sys
+from datetime import datetime
+from os import path
 
-from PIL import Image
+import pygame
+import requests
+from PyQt5 import QtMultimedia
+from PyQt5.QtCore import *
+from PyQt5.QtCore import QDateTime, Qt
+from PyQt5.QtGui import *
+from PyQt5.QtGui import QMovie
+from PyQt5.QtWidgets import *
+
+# determine the absolute path to the resources
+PATH_TEST_GIF = path.abspath(path.join(path.dirname(__file__), 'Resources/test.gif'))
+PATH_MIRRORED_GIF = path.abspath(path.join(path.dirname(__file__), 'Resources/mirrored.gif'))
+PATH_TRAY_ICON_DUCK = path.abspath(path.join(path.dirname(__file__), 'Resources/trayIcon_duck.png'))
+PATH_REST_GIF = path.abspath(path.join(path.dirname(__file__), 'Resources/rest.gif'))
+PATH_MUSIC_WAV = path.abspath(path.join(path.dirname(__file__), 'Resources/music.wav'))
+PATH_BARK_WAV = path.abspath(path.join(path.dirname(__file__), 'Resources/music.wav'))
+
 
 # class gifLabel(QLabel):
 #     def __init__(self, *args, **kwargs):
@@ -48,13 +45,12 @@ from PIL import Image
 #         self.setCursor(QCursor(Qt.ArrowCursor))
 
 
-
 class testWindow(QWidget):
     def __init__(self, parent=None, **kwargs):
         super(testWindow, self).__init__(parent)
         self.setWindowFlag(int(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint))
         self.setAutoFillBackground(False)
-        self.playGIF('Resources/test.gif', False)
+        self.playGIF(PATH_TEST_GIF, False)
         self.showTrayMenu()
         self.counter = 0
         self.boolIndicator = 0
@@ -106,22 +102,24 @@ class testWindow(QWidget):
         self.longitude = geo_json['longitude']
         self.city = geo_json['city']
         self.country = geo_json['country_name']
-        #print(self.country)
-        #self.country = geo_json['country']
-        #print(self.country)
-        #print(str(self.latitude)+" "+str(self.longitude)+ " "+self.city)
-        #temp_url = "9d531ce76790e4d6030ab8d0ffdccdcd"
-        #BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
-        #URL = BASE_URL + "q=" + "Hyderabad" + "&appid=" + temp_url
-        #host = socket.gethostbyname(socket.gethostname())
-        #data = requests.get("http://api.ipstack.com/" + host + "?access_key=" + "22557fbf2c4e3657e6a194bac14ce8da")
-        #data = data.json()
-        #lat = data['latitude']
-        #lon = data['longitude']
-        #print(lat)
-        self.weather = requests.get("http://api.openweathermap.org/data/2.5/weather?lat="+str(self.latitude)+"&lon="+str(self.longitude)+"&appid="+"5d48290001297c0b05a77ad26cbf3907")
+        # print(self.country)
+        # self.country = geo_json['country']
+        # print(self.country)
+        # print(str(self.latitude)+" "+str(self.longitude)+ " "+self.city)
+        # temp_url = "9d531ce76790e4d6030ab8d0ffdccdcd"
+        # BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
+        # URL = BASE_URL + "q=" + "Hyderabad" + "&appid=" + temp_url
+        # host = socket.gethostbyname(socket.gethostname())
+        # data = requests.get("http://api.ipstack.com/" + host + "?access_key=" + "22557fbf2c4e3657e6a194bac14ce8da")
+        # data = data.json()
+        # lat = data['latitude']
+        # lon = data['longitude']
+        # print(lat)
+        self.weather = requests.get(
+            "http://api.openweathermap.org/data/2.5/weather?lat=" + str(self.latitude) + "&lon=" + str(
+                self.longitude) + "&appid=" + "5d48290001297c0b05a77ad26cbf3907")
         self.weather = self.weather.json()
-        #print(weather)
+        # print(weather)
         self.location = self.city
         self.description = self.weather['weather'][0]['description']
         temperature = self.weather['main']['temp']
@@ -140,20 +138,21 @@ class testWindow(QWidget):
     #     self.resize(self.curWidth, self.curHeight)
     #     if lock:
     #         self.lockToCorner()
-        #response = requests.get(URL)
-        #print(108)
-        #data = response.json()
-        #print(data)
+    # response = requests.get(URL)
+    # print(108)
+    # data = response.json()
+    # print(data)
 
     def diseaseInfo(self):
-        disease = requests.get("https://api.covid19api.com/dayone/country/"+self.country+"/status/confirmed")
+        disease = requests.get("https://api.covid19api.com/dayone/country/" + self.country + "/status/confirmed")
         disease = disease.json()
-        self.totalCase = disease[len(disease)-1]["Cases"]
-        self.increasedCase = self.totalCase - disease[len(disease)-2]["Cases"]
-        #print(self.increasedCase)
-        #print(disease)
+        self.totalCase = disease[len(disease) - 1]["Cases"]
+        self.increasedCase = self.totalCase - disease[len(disease) - 2]["Cases"]
+        # print(self.increasedCase)
+        # print(disease)
 
     '''重载鼠标单击事件'''
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.is_follow_mouse = True
@@ -165,31 +164,33 @@ class testWindow(QWidget):
             self.timer.stop()
             self.initX = self.x()
 
-            #self.movie.start()
+            # self.movie.start()
 
     '''重载鼠标双击事件'''
+
     def mouseDoubleClickEvent(self, event):
         if self.is_running_action:
             self.rest()
             self.is_running_action = False
 
     '''重载鼠标移动事件'''
+
     def mouseMoveEvent(self, event):
         if Qt.LeftButton and self.is_follow_mouse:
-            #print(self.mouse_drag_pos.x())
-            #print(event.globalX())
-            #print(self.x())
-            #event.globalX() - self.x()
+            # print(self.mouse_drag_pos.x())
+            # print(event.globalX())
+            # print(self.x())
+            # event.globalX() - self.x()
             if self.x() < self.initX:
-                #self.direct = 1
-                self.movie = QMovie('Resources/test.gif')
+                # self.direct = 1
+                self.movie = QMovie(PATH_TEST_GIF)
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
                 self.label.setMovie(self.movie)
                 self.resize(self.curWidth, self.curHeight)
                 self.movie.start()
             elif self.x() > self.initX:
-                #self.direct = 0
-                self.movie = QMovie('Resources/mirrored.gif')
+                # self.direct = 0
+                self.movie = QMovie(PATH_MIRRORED_GIF)
                 self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
                 self.label.setMovie(self.movie)
                 self.resize(self.curWidth, self.curHeight)
@@ -210,6 +211,7 @@ class testWindow(QWidget):
             event.accept()
 
     '''重载鼠标释放事件'''
+
     def mouseReleaseEvent(self, event):
         self.is_follow_mouse = False
         self.setCursor(QCursor(Qt.ArrowCursor))
@@ -227,13 +229,11 @@ class testWindow(QWidget):
     #     #     print("case 2")
     #     # event.accept()
 
-
-
     # 右键打开context menu
     def contextMenuEvent(self, event):
         menu = self.menu
         action = menu.exec_(self.mapToGlobal(event.pos()))
-        #pass
+        # pass
 
     # def randomAct(self):
     #     if not self.is_running_action:
@@ -260,9 +260,9 @@ class testWindow(QWidget):
         #     height = gif.size[1]
         self.curWidth = self.curHeight = 128
         if not os.path.isfile(path=path):
-            raise ValueError
+            raise ValueError(f'File not found: path={path}')
         self.label = QLabel(self)
-        #self.label = gifLabel(self)
+        # self.label = gifLabel(self)
         self.movie = QMovie(path)
         self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
         self.label.setMovie(self.movie)
@@ -285,8 +285,8 @@ class testWindow(QWidget):
         self.quitAction = QAction("Quit", self, triggered=self.quit)
         self.infoAction = QAction("Daily Info", self, triggered=self.info)
         self.barkAction = QAction("Bark", self, triggered=self.bark)
-        self.musicAction = QAction("Music", self, triggered = self.music)
-        self.silentAction = QAction("Silent", self, triggered = self.silent)
+        self.musicAction = QAction("Music", self, triggered=self.music)
+        self.silentAction = QAction("Silent", self, triggered=self.silent)
         self.menu.addAction(self.infoAction)
         self.menu1.addAction(self.restAction)
         # self.menu.addAction(self.stopAction)
@@ -299,9 +299,8 @@ class testWindow(QWidget):
         self.menu.addAction(self.timerAction)
         self.menu.addAction(self.quitAction)
 
-
         self.tray = QSystemTrayIcon(self)
-        self.tray.setIcon(QIcon('Resources/trayIcon_duck.png'))
+        self.tray.setIcon(QIcon(PATH_TRAY_ICON_DUCK))
         self.tray.setContextMenu(self.menu)
         self.tray.show()
 
@@ -317,14 +316,14 @@ class testWindow(QWidget):
         secondButton = QLabel("Second")
         finish = QPushButton("OK")
         layout = QGridLayout()
-        layout.addWidget(genLabel,0,0)
-        layout.addWidget(self.line1,1,0)
-        layout.addWidget(hourButton,1,1)
-        layout.addWidget(self.line2,2,0)
-        layout.addWidget(minuteButton,2,1)
-        layout.addWidget(self.line3,3,0)
-        layout.addWidget(secondButton,3,1)
-        layout.addWidget(finish,4,2)
+        layout.addWidget(genLabel, 0, 0)
+        layout.addWidget(self.line1, 1, 0)
+        layout.addWidget(hourButton, 1, 1)
+        layout.addWidget(self.line2, 2, 0)
+        layout.addWidget(minuteButton, 2, 1)
+        layout.addWidget(self.line3, 3, 0)
+        layout.addWidget(secondButton, 3, 1)
+        layout.addWidget(finish, 4, 2)
         self.timeWindow.setLayout(layout)
         finish.clicked.connect(self.showDialog)
 
@@ -343,7 +342,7 @@ class testWindow(QWidget):
         reply = QMessageBox.information(self, "Timer Setup", "Start Alarm Clock",
                                         QMessageBox.Yes | QMessageBox.No)
         if reply:
-            time = cdHour*3600 + cdMin*60 + cdSec
+            time = cdHour * 3600 + cdMin * 60 + cdSec
             self.countDTimer.start(time * 1000)
             self.timeWindow.close()
             # print(cdHour, cdMin, cdSec)
@@ -355,37 +354,36 @@ class testWindow(QWidget):
     #     if not self.is_running_action:
     #         self.movie.stop()
     def music(self):
-        #sound_file = 'Resources/music.wav'
-        #self.sound = QtMultimedia.QSound(sound_file)
-        #self.musicProcess = Process(target = self.musicProcess)
-        #self.musicProcess.start()
-        #self.musicThread =
+        # sound_file = 'Resources/music.wav'
+        # self.sound = QtMultimedia.QSound(sound_file)
+        # self.musicProcess = Process(target = self.musicProcess)
+        # self.musicProcess.start()
+        # self.musicThread =
         pygame.init()
-        self.bgm = pygame.mixer.music.load('Resources/music.wav')
+        self.bgm = pygame.mixer.music.load(PATH_MUSIC_WAV)
         pygame.mixer.music.play(-1)
 
-
-        #self.sound.play()
-        #self.sound.setLoops(-1)
-        #QtMultimedia.QSound.play('Resources/music.wav')
+        # self.sound.play()
+        # self.sound.setLoops(-1)
+        # QtMultimedia.QSound.play('Resources/music.wav')
 
     def silent(self):
-        #QtMultimedia.QSound.stop()
-        #self.musicProcess.join()
+        # QtMultimedia.QSound.stop()
+        # self.musicProcess.join()
         pygame.mixer.music.stop()
 
-        #QThread.stop()
+        # QThread.stop()
+
     def rest(self):
         '''替换狗子图片为休息'''
         self.is_running_action = False
-        self.movie = QMovie('Resources/rest.gif')
+        self.movie = QMovie(PATH_REST_GIF)
         self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
         self.label.setMovie(self.movie)
         self.resize(self.curWidth, self.curHeight)
         self.movie.start()
         self.lockToCorner()
         self.timer.stop()
-
 
     def hide(self):
         if not self.is_running_action:
@@ -400,7 +398,7 @@ class testWindow(QWidget):
         sys.exit()
 
     def bark(self):
-        QtMultimedia.QSound.play('Resources/bark.wav')
+        QtMultimedia.QSound.play(PATH_BARK_WAV)
 
     # def timerCall(self):
     #     # self.text.setText("Current time is "+timeDisplay)
@@ -409,36 +407,35 @@ class testWindow(QWidget):
     def startTimer(self):
         self.timer.start(self.firstTimerValue)
 
-
     def responseTimer(self):
         self.counter = 0
         self.timer.stop()
         random.seed(datetime.now())
-        self.deltaX = (random.random()*10) - 5
-        self.deltaY = (random.random()*10) - 5
-        #print(self.deltaX)
+        self.deltaX = (random.random() * 10) - 5
+        self.deltaY = (random.random() * 10) - 5
+        # print(self.deltaX)
 
         if self.deltaX >= 0:
-            #print("To the left")
-            #self.label = QLabel(self)
-            self.movie = QMovie('Resources/test.gif')
+            # print("To the left")
+            # self.label = QLabel(self)
+            self.movie = QMovie(PATH_TEST_GIF)
             self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
             self.label.setMovie(self.movie)
             self.resize(self.curWidth, self.curHeight)
             self.movie.start()
         elif self.deltaX < 0:
-            #print("To the right")
-            #self.label = QLabel(self)
-            self.movie = QMovie('Resources/mirrored.gif')
+            # print("To the right")
+            # self.label = QLabel(self)
+            self.movie = QMovie(PATH_MIRRORED_GIF)
             self.movie.setScaledSize(QSize(self.curWidth, self.curHeight))
             self.label.setMovie(self.movie)
             self.resize(self.curWidth, self.curHeight)
             self.movie.start()
-        #print(self.deltaX)
+        # print(self.deltaX)
         self.startTimer2()
 
     def startTimer2(self):
-        #print(2)
+        # print(2)
         self.secondTimer.start(40)
 
     def secondTimerResponse(self):
@@ -446,7 +443,7 @@ class testWindow(QWidget):
             while not self.checkPos():
                 self.deltaX = (random.random() * 10) - 5
                 self.deltaY = (random.random() * 10) - 5
-            self.move(int(self.x()-self.deltaX), int(self.y()-self.deltaY))
+            self.move(int(self.x() - self.deltaX), int(self.y() - self.deltaY))
             self.counter += 1
         else:
             self.secondTimer.stop()
@@ -458,11 +455,10 @@ class testWindow(QWidget):
         # sizeInfo = QDesktopWidget().screenGeometry()
         # horz = sizeInfo.width() - self.curWidth
         # vert = sizeInfo.height() - self.curHeight
-        if temp_x>self.horz or temp_y>self.vert or temp_x<0 or temp_y<0:
+        if temp_x > self.horz or temp_y > self.vert or temp_x < 0 or temp_y < 0:
             return False
         else:
             return True
-
 
     def countDTimerResponse(self):
         self.countDTimer.stop()
@@ -489,15 +485,15 @@ class testWindow(QWidget):
         icon = QPushButton("OK")
         icon.clicked.connect(self.closeInfoWindow)
         layout = QGridLayout()
-        layout.addWidget(label_t1,0,0)
-        layout.addWidget(label_t2,1,0)
-        layout.addWidget(label_w1,2,0)
-        layout.addWidget(label_w2,3,0)
-        layout.addWidget(label_w3,4,0)
-        layout.addWidget(label_c1,5,0)
-        layout.addWidget(label_c2,7,0)
-        layout.addWidget(label_c3,8,0)
-        layout.addWidget(icon,9,3)
+        layout.addWidget(label_t1, 0, 0)
+        layout.addWidget(label_t2, 1, 0)
+        layout.addWidget(label_w1, 2, 0)
+        layout.addWidget(label_w2, 3, 0)
+        layout.addWidget(label_w3, 4, 0)
+        layout.addWidget(label_c1, 5, 0)
+        layout.addWidget(label_c2, 7, 0)
+        layout.addWidget(label_c3, 8, 0)
+        layout.addWidget(icon, 9, 3)
         self.infoWindow.setLayout(layout)
 
         self.infoWindow.show()
@@ -506,17 +502,13 @@ class testWindow(QWidget):
         self.infoWindow.close()
 
 
-
-
-
 if __name__ == '__main__':
-
     # print(Qt.FramelessWindowHint)
     app = QApplication(sys.argv)
     tW = testWindow()
     # tW.changeImage('shime1.png', True)
     tW.show()
-    #print(tW.width(), tW.height())
+    # print(tW.width(), tW.height())
     # for i in range(1, 30):
     #     tW.changeImage('shime' + str(i) + '.png', False)
     #     time.sleep(1)
