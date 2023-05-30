@@ -1,19 +1,16 @@
-## Duck
-### Duck Duck 
+## Youtube link to demonstration https://www.youtube.com/watch?v=OWy4NSeJf5E
+### Hope you will like this!
 
 ## Current Status 
 
 ### Already Done 
-    1. 有一条狗
-    ~~2. 能拖着跑~~
-    ~~3. 跑的时候能动~~
-    2. 可以拖动
-    3. 双击开始/停止跑动
-    4. 右键打开可以调教狗子（talk功能待实现）
-    5. 加入系统托盘菜单（内容同4）
+    1. UI Puppy
+    ~~2. Ability of moving~~
+    ~~3. Ability of running~~
+    4. Dragging
+    5. Motion Detection
+    6. Versatile features (talk to be implemented)
+    7. Disk selection
 
 ### To Be Done
-    1. 狗太笨，啥也不会
-        e.g 自己走路？ 
-            定时提醒？ 。。。 
-    2. 狗不会说话 [Doge]
+    1. Implement AI features into dog's ability of conversating.
